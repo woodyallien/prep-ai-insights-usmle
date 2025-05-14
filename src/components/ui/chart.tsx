@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
@@ -5,6 +6,21 @@ import { cn } from "@/lib/utils"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
+
+// Chart configuration types
+export interface BarChartProps {
+  data: any[];
+  index: string;
+  categories: string[];
+  colors?: string[];
+  valueFormatter?: (value: number) => string;
+  showLegend?: boolean;
+  showXAxis?: boolean;
+  showYAxis?: boolean;
+  showTooltip?: boolean;
+  showGridLines?: boolean;
+  chartHeight?: number;
+}
 
 export type ChartConfig = {
   [k in string]: {
@@ -95,6 +111,101 @@ ${colorConfig
           .join("\n"),
       }}
     />
+  )
+}
+
+// Export BarChart component
+export const BarChart: React.FC<BarChartProps> = ({
+  data,
+  index,
+  categories,
+  colors = ['#3b82f6'],
+  valueFormatter = (value) => `${value}`,
+  showLegend = false,
+  showXAxis = true,
+  showYAxis = true,
+  showTooltip = true,
+  showGridLines = false,
+  chartHeight = 300,
+}) => {
+  const chartConfig: ChartConfig = {}
+  
+  // Create chart config for coloring
+  categories.forEach((category, i) => {
+    chartConfig[category] = {
+      color: colors[i % colors.length],
+    }
+  })
+
+  return (
+    <ChartContainer className="w-full h-full" config={chartConfig}>
+      <RechartsPrimitive.BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} height={chartHeight}>
+        {showGridLines && (
+          <RechartsPrimitive.CartesianGrid 
+            strokeDasharray="3 3" 
+            vertical={false} 
+            stroke="#ccc"
+          />
+        )}
+        {showXAxis && (
+          <RechartsPrimitive.XAxis 
+            dataKey={index} 
+            axisLine={false} 
+            tickLine={false}
+            tickMargin={8}
+          />
+        )}
+        {showYAxis && (
+          <RechartsPrimitive.YAxis 
+            axisLine={false} 
+            tickLine={false}
+            tickMargin={8}
+          />
+        )}
+        {showTooltip && (
+          <RechartsPrimitive.Tooltip 
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="rounded-lg border bg-background p-2 shadow-sm">
+                    <div className="grid grid-cols-2 gap-2">
+                      {payload.map((entry) => (
+                        <div key={entry.name} className="flex items-center gap-1">
+                          <div 
+                            className="h-2 w-2 rounded-full" 
+                            style={{ backgroundColor: entry.color }}
+                          />
+                          <span className="text-muted-foreground">{entry.name}:</span>
+                          <span className="font-medium">
+                            {valueFormatter ? valueFormatter(entry.value) : entry.value}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+              return null
+            }}
+          />
+        )}
+        {categories.map((category, index) => (
+          <RechartsPrimitive.Bar 
+            key={category} 
+            dataKey={category} 
+            fill={colors[index % colors.length]} 
+            radius={[4, 4, 0, 0]}
+          />
+        ))}
+        {showLegend && (
+          <RechartsPrimitive.Legend 
+            align="right" 
+            verticalAlign="top"
+            wrapperStyle={{ paddingBottom: "20px" }}
+          />
+        )}
+      </RechartsPrimitive.BarChart>
+    </ChartContainer>
   )
 }
 
