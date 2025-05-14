@@ -73,14 +73,14 @@ const Practice = () => {
                       <div className="space-y-2">
                         <Label htmlFor="category">Category</Label>
                         <Select 
-                          onValueChange={(value) => setQuizSettings({ categoryId: value })}
-                          value={quizSettings.categoryId}
+                          onValueChange={(value) => setQuizSettings({ categoryId: value === "all" ? "" : value })}
+                          value={quizSettings.categoryId || "all"}
                         >
                           <SelectTrigger id="category">
                             <SelectValue placeholder="Select a category" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">All Categories</SelectItem>
+                            <SelectItem value="all">All Categories</SelectItem>
                             {categories.map(category => (
                               <SelectItem key={category.id} value={category.id}>
                                 {category.name}
@@ -94,14 +94,14 @@ const Practice = () => {
                         <div className="space-y-2">
                           <Label htmlFor="subtopic">Subtopic</Label>
                           <Select 
-                            onValueChange={(value) => setQuizSettings({ subtopicId: value })}
-                            value={quizSettings.subtopicId || ''}
+                            onValueChange={(value) => setQuizSettings({ subtopicId: value === "all" ? "" : value })}
+                            value={quizSettings.subtopicId || "all"}
                           >
                             <SelectTrigger id="subtopic">
                               <SelectValue placeholder="Select a subtopic" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="">All Subtopics</SelectItem>
+                              <SelectItem value="all">All Subtopics</SelectItem>
                               {categories
                                 .find(c => c.id === quizSettings.categoryId)
                                 ?.subtopics.map(subtopic => (
@@ -118,14 +118,14 @@ const Practice = () => {
                       <div className="space-y-2">
                         <Label htmlFor="difficulty">Difficulty</Label>
                         <Select 
-                          onValueChange={(value) => setQuizSettings({ difficulty: value as any })}
-                          value={quizSettings.difficulty || ''}
+                          onValueChange={(value) => setQuizSettings({ difficulty: value === "all" ? "" : value as any })}
+                          value={quizSettings.difficulty || "all"}
                         >
                           <SelectTrigger id="difficulty">
                             <SelectValue placeholder="Select difficulty" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">All Difficulties</SelectItem>
+                            <SelectItem value="all">All Difficulties</SelectItem>
                             <SelectItem value="easy">Easy</SelectItem>
                             <SelectItem value="medium">Medium</SelectItem>
                             <SelectItem value="hard">Hard</SelectItem>
@@ -136,14 +136,14 @@ const Practice = () => {
                       <div className="space-y-2">
                         <Label htmlFor="competency">Competency Domain</Label>
                         <Select 
-                          onValueChange={(value) => setQuizSettings({ competencyDomainId: value })}
-                          value={quizSettings.competencyDomainId || ''}
+                          onValueChange={(value) => setQuizSettings({ competencyDomainId: value === "all" ? "" : value })}
+                          value={quizSettings.competencyDomainId || "all"}
                         >
                           <SelectTrigger id="competency">
                             <SelectValue placeholder="Select domain" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">All Domains</SelectItem>
+                            <SelectItem value="all">All Domains</SelectItem>
                             {competencyDomains.map(domain => (
                               <SelectItem key={domain.id} value={domain.id}>
                                 {domain.name}
